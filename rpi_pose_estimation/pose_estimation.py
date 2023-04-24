@@ -49,7 +49,7 @@ def run(estimation_model: str, tracker_type: str, classification_model: str,
         'MoveNet MultiPose model.')
 
   # Initialize the pose estimator selected.
-  if estimation_model in ['movenet_lightning', 'movenet_thunder']:
+  if estimation_model in ['movenet_lightning', 'movenet_thunder', 'movenet_lightning_int']:
     pose_detector = Movenet(estimation_model)
   elif estimation_model == 'posenet':
     pose_detector = Posenet(estimation_model)
@@ -93,7 +93,7 @@ def run(estimation_model: str, tracker_type: str, classification_model: str,
       )
 
     counter += 1
-    image = cv2.flip(image, -1)
+    # image = cv2.flip(image, -1)
 
     if estimation_model == 'movenet_multipose':
       # Run pose estimation using a MultiPose model.
@@ -140,7 +140,7 @@ def run(estimation_model: str, tracker_type: str, classification_model: str,
       start_time = time.time()
 
     # Show the FPS
-    fps_text = 'FPS = ' + str(int(fps))
+    fps_text = 'FPS = ' + "%0.01f" % fps
     text_location = (left_margin, row_size)
     cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
                 font_size, text_color, font_thickness)
@@ -161,7 +161,7 @@ def main():
       '--model',
       help='Name of estimation model.',
       required=False,
-      default='movenet_lightning')
+      default='movenet_lightning_int')
   parser.add_argument(
       '--tracker',
       help='Type of tracker to track poses across frames.',

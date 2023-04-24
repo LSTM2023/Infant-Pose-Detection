@@ -30,6 +30,11 @@ def gen_frames(): # generate frame by frame from camera
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n') # concat frame one by one and show result
+            
+            # yield (b'--frame\r\n'
+            #        b'Content-Type:image/jpeg\r\n'
+            #        b'Content-Length: ' + f"{len(frame)}".encode() + b'\r\n'
+            #        b'\r\n' + frame + b'\r\n') # Streaming to pose_estimation/pose_estimation.py
 
 @app.route('/video_feed')
 def video_feed():
