@@ -1,1 +1,1 @@
-# Pose Estimation with Rasbperry Pi
+# Pose Estimation with Rasbperry Pi's Streaming Server
