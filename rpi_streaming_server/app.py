@@ -20,15 +20,16 @@ def gen_frames(): # generate frame by frame from camera
         else:
             frame = cv2.flip(frame, -1)
             
-            frame_index_str = f"Frame : {frame_index}"
-            cv2.putText(frame, frame_index_str, (0, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
-            
             curTime = time.time()
             sec = curTime - prevTime
             prevTime = curTime
             fps = 1. / sec
             fps_str = "RPi FPS : %0.01f" % fps
             cv2.putText(frame, fps_str, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+            
+            frame_index_str = f"Frame : {frame_index}"
+            # cv2.putText(frame, frame_index_str, (0, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+            frame_index = frame_index + 1
             
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -39,8 +40,6 @@ def gen_frames(): # generate frame by frame from camera
             #        b'Content-Type:image/jpeg\r\n'
             #        b'Content-Length: ' + f"{len(frame)}".encode() + b'\r\n'
             #        b'\r\n' + frame + b'\r\n') # Streaming to pose_estimation/pose_estimation.py
-            
-            frame_index = frame_index + 1
 
 @app.route('/video_feed')
 def video_feed():
