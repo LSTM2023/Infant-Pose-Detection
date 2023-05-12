@@ -7,7 +7,7 @@ app = Flask(__name__)
 camera = cv2.VideoCapture(0) # use 0 for web camera
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640) # 2592
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 1944
-camera.set(cv2.CAP_PROP_FPS, 60)
+camera.set(cv2.CAP_PROP_FPS, 20)
 
 def gen_frames(): # generate frame by frame from camera
     prevTime = 0
@@ -28,13 +28,13 @@ def gen_frames(): # generate frame by frame from camera
             cv2.putText(frame, fps_str, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
             
             frame_index_str = f"Frame : {frame_index}"
-            # cv2.putText(frame, frame_index_str, (0, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+            # cv2.putText(frame, frame_index_str, (0, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
             frame_index = frame_index + 1
             
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n') # concat frame one by one and show result
+                  b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n') # concat frame one by one and show result
             
             # yield (b'--frame\r\n'
             #        b'Content-Type:image/jpeg\r\n'
