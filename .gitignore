@@ -6,3 +6,5 @@ __pycache__/
 *.png
 *.mp4
 rgb
+
+firebase_flutter_notification
