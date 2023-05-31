@@ -1,10 +1,29 @@
 import os, sys
 import time
 import cv2
+import numpy as np
 from ultralytics import YOLO
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))
 from firebase_flutter_notification.notification import push_notification
+
+def vector_between_points(p1, p2):
+    return np.array(p2) - np.array(p1)
+
+def cosine_similarity(v1, v2):
+    dot_product = np.dot(v1, v2)
+    v1_norm = np.linalg.norm(v1)
+    v2_norm = np.linalg.norm(v2)
+    
+    return dot_product / (v1_norm * v2_norm)
+
+def angle_between_vectors(v1, v2):
+    cos_sim = cosine_similarity(v1, v2)
+    cos_sim = np.clip(cos_sim, -1.0, 1.0) # arccos 함수는 -1 ~ 1 에만 정상 작동
+    angle = np.arccos(cos_sim)  # Cosine Similarity -> Radian
+    degrees = round(np.degrees(angle), 1)  # Radian -> Degrees
+    
+    return degrees
 
 # Load the YOLOv8 model
 model = YOLO('yolov8x-pose.pt')
@@ -35,7 +54,7 @@ while cap.isOpened():
 
     if success:
         # Run YOLOv8 inference on the frame
-        frame = cv2.resize(frame, resize_resolution)
+        # frame = cv2.resize(frame, resize_resolution)
         results = model(frame, stream=True, conf=0.6, verbose=False)
         
         for result in results:
@@ -58,6 +77,15 @@ while cap.isOpened():
                 coordinate = 0
             else: # 가로
                 coordinate = 1
+                
+            point_a = single_kpts[5]
+            point_b = single_kpts[7]
+            point_c = single_kpts[9]
+            vector_a = vector_between_points(point_b, point_a)
+            vector_b = vector_between_points(point_b, point_c)
+
+            angle = angle_between_vectors(vector_a, vector_b)
+            print(angle)
             
         except Exception as e: # 예외 발생 o
             no_stack = no_stack + 1
@@ -104,11 +132,14 @@ while cap.isOpened():
             cv2.putText(annotated_frame, f"no_stack : {no_stack} / 500", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
             
         if pose_string == "Normal Sleeping Pose":
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
+            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
+            cv2.putText(annotated_frame, "Normal Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
         elif pose_string == "Bad Sleeping Pose":
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
+            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
+            cv2.putText(annotated_frame, "Bad Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
         else: # "Danger Sleeping Pose"
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
+            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
+            cv2.putText(annotated_frame, "Danger Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
 
         # Display the annotated frame
         cv2.imshow("YOLOv8 Inference", annotated_frame)
