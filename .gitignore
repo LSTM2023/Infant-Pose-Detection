@@ -8,3 +8,4 @@ __pycache__/
 rgb
 
 firebase_flutter_notification
+.DS_Store
