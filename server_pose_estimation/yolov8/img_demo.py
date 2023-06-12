@@ -4,7 +4,7 @@ from ultralytics import YOLO
 # Load the YOLOv8 model
 model = YOLO('yolov8x-pose.pt')
 
-results = model("baby.png", conf=0.5, verbose=False)
+results = model("baby_3.jpg", conf=0.5, verbose=False)
 
 for result in results:
     result = result.cpu().numpy()
@@ -17,4 +17,7 @@ for result in results:
 # Visualize the results on the frame
 annotated_frame = result.plot(labels=False)
 
-cv2.imwrite('test.jpg', annotated_frame)
+
+cv2.imshow('test.jpg', annotated_frame)
+if cv2.waitKey(0) & 0xFF == ord("q"):
+    cv2.destroyAllWindows()
