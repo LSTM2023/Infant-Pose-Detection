@@ -9,23 +9,23 @@ from firebase_flutter_notification.notification import push_notification
 from degrees import get_angle
 
 # Load the YOLOv8 model
-model = YOLO('yolov8x-pose.pt')
+model = YOLO('yolov8m-pose.pt')
 
 # Open the video file
 # video_path = "./rgb/syn_%5d.png"
-video_path = "real_baby_1.mp4"
-# video_path = "http://203.249.22.164:5000/video_feed"
+# video_path ="real_baby_1.mp4"
+video_path = "http://203.249.22.164:5000/video_feed"
 
 cap = cv2.VideoCapture(video_path)
 fps = cap.get(cv2.CAP_PROP_FPS)
 resize_resolution = (360, 480)
 
-fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-out = cv2.VideoWriter("save_video.mp4", fourcc, fps, resize_resolution)
+# fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+# out = cv2.VideoWriter("save_video.mp4", fourcc, fps, resize_resolution)
 
-if not out.isOpened():
-    cap.release()
-    sys.exit()
+# if not out.isOpened():
+#     cap.release()
+#     sys.exit()
 
 prevTime = 0
 bad_stack, no_stack = 0, 0
@@ -100,7 +100,7 @@ while cap.isOpened():
         prevTime = curTime
         fps = 1. / sec
         fps_string = "Server FPS : %0.01f" % fps
-        # cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+        cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
         
         if pose_string == "There is no BBox.":
             cv2.putText(annotated_frame, f"no_stack : {no_stack} / 500", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 100, 100), 2)
@@ -108,18 +108,18 @@ while cap.isOpened():
             cv2.putText(annotated_frame, f"no_stack : {no_stack} / 500", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
             
         if pose_string == "Normal Sleeping Pose":
-            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
-            cv2.putText(annotated_frame, "Normal Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
+            # cv2.putText(annotated_frame, "Normal Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
         elif pose_string == "Bad Sleeping Pose":
-            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
-            cv2.putText(annotated_frame, "Bad Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
+            # cv2.putText(annotated_frame, "Bad Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
         else: # "Danger Sleeping Pose"
-            # cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
-            cv2.putText(annotated_frame, "Danger Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
+            # cv2.putText(annotated_frame, "Danger Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2) """
 
         # Display the annotated frame
         cv2.imshow("YOLOv8 Inference", annotated_frame)
-        out.write(annotated_frame)
+        # out.write(annotated_frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -130,5 +130,5 @@ while cap.isOpened():
 
 # Release the video capture object and close the display window
 cap.release()
-out.release()
+# out.release()
 cv2.destroyAllWindows()
