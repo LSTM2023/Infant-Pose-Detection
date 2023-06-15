@@ -9,7 +9,7 @@ from firebase_flutter_notification.notification import push_notification
 from degrees import get_angle
 
 # Load the YOLOv8 model
-model = YOLO('yolov8m-pose.pt')
+model = YOLO('yolov8x-pose.pt')
 
 # Open the video file
 # video_path = "./rgb/syn_%5d.png"
@@ -84,10 +84,10 @@ while cap.isOpened():
                 pose_string = "Normal Sleeping Pose"
                 
         finally:
-            if no_stack == 500:
+            if no_stack == 150:
                 no_stack = 0
                 push_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
-            if bad_stack == 500:
+            if bad_stack == 150:
                 bad_stack = 0
                 push_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
                 
@@ -100,21 +100,21 @@ while cap.isOpened():
         prevTime = curTime
         fps = 1. / sec
         fps_string = "Server FPS : %0.01f" % fps
-        cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+        # cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
         
         if pose_string == "There is no BBox.":
-            cv2.putText(annotated_frame, f"no_stack : {no_stack} / 500", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 100, 100), 2)
+            cv2.putText(annotated_frame, f"no_stack : {no_stack} / 150", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 100, 100), 2)
         else:
-            cv2.putText(annotated_frame, f"no_stack : {no_stack} / 500", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+            cv2.putText(annotated_frame, f"no_stack : {no_stack} / 150", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
             
         if pose_string == "Normal Sleeping Pose":
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 150", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
             # cv2.putText(annotated_frame, "Normal Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
         elif pose_string == "Bad Sleeping Pose":
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 150", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
             # cv2.putText(annotated_frame, "Bad Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
         else: # "Danger Sleeping Pose"
-            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 500", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
+            cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 150", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2)
             # cv2.putText(annotated_frame, "Danger Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 215), 2) """
 
         # Display the annotated frame
