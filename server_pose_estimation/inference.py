@@ -12,8 +12,8 @@ from degrees import get_angle
 model = YOLO('yolov8x-pose.pt')
 
 # Open the video file
-# video_path = "./rgb/syn_%5d.png"
-# video_path ="real_baby_1.mp4"
+# video_path = ".baby_source/rgb/syn_%5d.png"
+# video_path ="./baby_source/real_baby_1.mp4"
 video_path = "http://203.249.22.164:5000/video_feed"
 
 cap = cv2.VideoCapture(video_path)
