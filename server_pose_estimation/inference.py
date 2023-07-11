@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from firebase_flutter_notification.notification import push_notification
 from degrees import get_angle
 
@@ -13,8 +13,8 @@ model = YOLO('yolov8x-pose.pt')
 
 # Open the video file
 # video_path = ".baby_source/rgb/syn_%5d.png"
-# video_path ="./baby_source/real_baby_1.mp4"
-video_path = "http://203.249.22.164:5000/video_feed"
+video_path ="./baby_source/real_baby_1.mp4"
+# video_path = "http://203.249.22.164:5000/video_feed"
 
 cap = cv2.VideoCapture(video_path)
 fps = cap.get(cv2.CAP_PROP_FPS)

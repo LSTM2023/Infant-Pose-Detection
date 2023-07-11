@@ -4,7 +4,7 @@ from ultralytics import YOLO
 # Load the YOLOv8 model
 model = YOLO('yolov8x-pose.pt')
 
-results = model("baby_3.jpg", conf=0.5, verbose=False)
+results = model("./baby_source/baby_3.jpg", conf=0.5, verbose=False)
 
 for result in results:
     result = result.cpu().numpy()
