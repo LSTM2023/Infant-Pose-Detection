@@ -2,11 +2,12 @@
 __pycache__/
 *.py[cod]
 
+*.pt
+
 *.jpg
 *.png
 *.mp4
-baby_source
-
+dataset
 
 firebase_flutter_notification
 .DS_Store

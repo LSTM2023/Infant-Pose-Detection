@@ -1,8 +1,0 @@
-# Byte-compiled / optimized / DLL files
-OAI-KL/__pycache__/
-*.py[cod]
-
-log
-output
-models
-test
