@@ -3,12 +3,14 @@ import numpy as np
 def vector_between_points(p1, p2):
     return np.array(p2) - np.array(p1)
 
+
 def cosine_similarity(v1, v2):
     dot_product = np.dot(v1, v2)
     v1_norm = np.linalg.norm(v1)
     v2_norm = np.linalg.norm(v2)
     
     return dot_product / (v1_norm * v2_norm)
+
 
 def angle_between_vectors(v1, v2):
     cos_sim = cosine_similarity(v1, v2)
@@ -17,6 +19,7 @@ def angle_between_vectors(v1, v2):
     degrees = round(np.degrees(angle), 1)  # Radian -> Degrees
     
     return degrees
+
 
 def get_angle(single_kpts):
     point_a = single_kpts[5]
