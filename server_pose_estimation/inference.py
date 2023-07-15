@@ -1,18 +1,15 @@
 import os, sys
 import time
 import cv2
-import numpy as np
 from ultralytics import YOLO
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from firebase_flutter_notification.notification import push_notification
-from degrees import get_angle
+from notification import push_notification
+from utils.pose_utils import get_pose_info, detect_pose
 
 # Load the YOLOv8 model
 model = YOLO('yolov8x-pose.pt')
 
 # Open the video file
-# video_path = ".baby_source/rgb/syn_%5d.png"
 video_path ="./baby_source/real_baby_1.mp4"
 # video_path = "http://203.249.22.164:5000/video_feed"
 
@@ -41,47 +38,22 @@ while cap.isOpened():
         results = model(frame, stream=True, conf=0.6, verbose=False)
         
         for result in results:
-            
             result = result.cpu().numpy()
             
             # probs = result.probs  # Class probabilities for classification outputs
-            boxes = result.boxes  # Boxes object for bbox outputs
+            result_boxes = result.boxes  # Boxes object for bbox outputs
             # masks = result.masks  # Masks object for segmentation masks outputs
-            kpts = result.keypoints
+            result_kpts = result.keypoints
         
         try: # 예외 처리 부분
-            resolution_w = boxes.orig_shape[1] # 640
-            resolution_h = boxes.orig_shape[0] # 480
-            single_box = boxes.xywh[0] # (Center x, Center y, w, h)
-            single_box_n = boxes.xywhn[0] # Normalized (Center x, Center y, w, h)
-            single_kpts = kpts[0] # (17, 3) : (17 kpts, (x, y, conf))
-            
-            if single_box[2] < single_box[3]: # 세로
-                coordinate = 0
-            else: # 가로
-                coordinate = 1
-                
-            get_angle(single_kpts)
+            single_kpts, aspect_ratio = get_pose_info(result_boxes, result_kpts)
             
         except Exception as e: # 예외 발생 o
             no_stack = no_stack + 1
             pose_string = "There is no BBox."
             
         else: # 예외 발생 x
-            no_stack = max(0, no_stack - 1)
-                    
-            hand_kpts = (single_kpts[9][coordinate], single_kpts[10][coordinate])
-            condition1 = all(val > single_kpts[6][coordinate] for val in hand_kpts)
-            condition2 = all(val < single_kpts[5][coordinate] for val in hand_kpts)
-            if (single_kpts[5][coordinate] < single_kpts[6][coordinate]) and (single_kpts[11][coordinate] < single_kpts[12][coordinate]): # 완전 뒤집힌 자세
-                bad_stack = bad_stack + 1
-                pose_string = "Dangerous Sleeping Pose"
-            elif condition1 or condition2: # 옆으로 누운 자세
-                bad_stack = bad_stack + 1
-                pose_string = "Bad Sleeping Pose"
-            else: # 정상 자세
-                bad_stack = max(0, bad_stack - 1)
-                pose_string = "Normal Sleeping Pose"
+            bad_stack, pose_string = detect_pose(single_kpts, aspect_ratio)
                 
         finally:
             if no_stack == 150:
