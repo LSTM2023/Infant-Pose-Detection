@@ -1,4 +1,4 @@
-import os, sys
+import sys
 import time
 import cv2
 from ultralytics import YOLO
@@ -50,7 +50,7 @@ while cap.isOpened():
             longer_aspect = get_longer_aspect(result_boxes)
             
         except Exception as e: # 예외 발생 o
-            no_stack = no_stack + 1
+            no_stack += 1
             pose_string = "There is no BBox."
             
         else: # 예외 발생 x
@@ -72,7 +72,7 @@ while cap.isOpened():
         sec = curTime - prevTime
         prevTime = curTime
         fps = 1. / sec
-        fps_string = "Server FPS : %0.01f" % fps
+        fps_string = f"Server FPS : {fps:.01f}"
         # cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
         
         if pose_string == "There is no BBox.":

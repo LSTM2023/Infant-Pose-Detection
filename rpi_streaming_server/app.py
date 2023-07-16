@@ -12,6 +12,7 @@ camera.set(cv2.CAP_PROP_FPS, 20)
 def gen_frames(): # generate frame by frame from camera
     prevTime = 0
     frame_index = 0
+    
     while True:
         # Capture frame-by-frame
         success, frame = camera.read() # read the camera frame
@@ -24,12 +25,12 @@ def gen_frames(): # generate frame by frame from camera
             sec = curTime - prevTime
             prevTime = curTime
             fps = 1. / sec
-            fps_str = "RPi FPS : %0.01f" % fps
+            fps_str = f"RPi FPS : {fps:.01f}"
             cv2.putText(frame, fps_str, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
             
             frame_index_str = f"Frame : {frame_index}"
             # cv2.putText(frame, frame_index_str, (0, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
-            frame_index = frame_index + 1
+            frame_index += 1
             
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -42,15 +43,18 @@ def gen_frames(): # generate frame by frame from camera
                    b'Content-Length: ' + f"{len(frame)}".encode() + b'\r\n'
                    b'\r\n' + frame + b'\r\n')
 
+
 @app.route('/video_feed')
 def video_feed():
     # Video streaming route. Put this in the src attribute of an img tag
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 @app.route('/')
 def index():
     """Video streaming home page."""
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, threaded=True)
