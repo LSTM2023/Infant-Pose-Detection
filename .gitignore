@@ -3,10 +3,6 @@ __pycache__/
 *.py[cod]
 
 *.pt
-
-*.jpg
-*.png
-*.mp4
 dataset
 
 firebase_flutter_notification
