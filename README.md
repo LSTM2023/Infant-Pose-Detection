@@ -1,4 +1,4 @@
-# Pose Estimation with Rasbperry Pi's Streaming System
+# Pose Detection with Pose Estimation via Rasbperry Pi's Streaming System
 
-Pose Estimation using YOLOv8-Pose </br>
+Pose Detection using YOLOv8-Pose </br>
 Source : Video transmitted from the Raspberry Pi's Camera Module
