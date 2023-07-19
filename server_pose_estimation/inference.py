@@ -4,18 +4,18 @@ import cv2
 from ultralytics import YOLO
 
 from notification import push_notification
-from utils.pose_utils import get_longer_aspect, get_pose_info
+from utils.pose_utils import determine_pose_orientation, get_pose_status
 
 # Load the YOLOv8 model
-model = YOLO('yolov8x-pose.pt')
+model = YOLO('yolov8m-pose.pt')
 
 # Open the video file
-video_path ="./baby_source/real_baby_1.mp4"
+video_path ="./dataset/test/real_baby_1.mp4"
 # video_path = "http://203.249.22.164:5000/video_feed"
 
 cap = cv2.VideoCapture(video_path)
 fps = cap.get(cv2.CAP_PROP_FPS)
-resize_resolution = (360, 480)
+# resize_resolution = (640, 480)
 
 # fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 # out = cv2.VideoWriter("save_video.mp4", fourcc, fps, resize_resolution)
@@ -25,7 +25,7 @@ resize_resolution = (360, 480)
 #     sys.exit()
 
 prevTime = 0
-bad_stack, no_stack = 0, 0
+no_stack, bad_stack = 0, 0
 
 # Loop through the video frames
 while cap.isOpened():
@@ -46,15 +46,24 @@ while cap.isOpened():
             result_kpts = result.keypoints
         
         try: # 예외 처리 부분
-            single_kpts = result_kpts[0] # (17, 3) : (17 kpts, (x, y, conf))
-            longer_aspect = get_longer_aspect(result_boxes)
+            first_box = result_boxes.xywh[0] # (Center x, Center y, w, h)
+            first_kpts = result_kpts.data[0] # (17, 3) : (17 kpts, (x, y, conf))
             
         except Exception as e: # 예외 발생 o
             no_stack += 1
-            pose_string = "There is no BBox."
+            pose_status = "There is no BBox."
             
         else: # 예외 발생 x
-            no_stack, bad_stack, pose_string = get_pose_info(single_kpts, longer_aspect)
+            no_stack = max(0, no_stack - 1)
+
+            pose_orientation = determine_pose_orientation(first_box)
+            pose_status = get_pose_status(first_kpts, pose_orientation)
+            
+            alert_strings = ['Bad', 'Dangerous']
+            if any(alert in pose_status for alert in alert_strings):
+                bad_stack += 1
+            else: # 'Normal' in pose_status:
+                bad_stack = max(0, bad_stack - 1)
                 
         finally:
             if no_stack == 150:
@@ -75,15 +84,15 @@ while cap.isOpened():
         fps_string = f"Server FPS : {fps:.01f}"
         # cv2.putText(annotated_frame, fps_string, (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
         
-        if pose_string == "There is no BBox.":
+        if pose_status == "There is no BBox.":
             cv2.putText(annotated_frame, f"no_stack : {no_stack} / 150", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 100, 100), 2)
         else:
             cv2.putText(annotated_frame, f"no_stack : {no_stack} / 150", (0, 425), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
             
-        if pose_string == "Normal Sleeping Pose":
+        if pose_status == "Normal Sleeping Pose":
             cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 150", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
             # cv2.putText(annotated_frame, "Normal Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 230, 255), 2)
-        elif pose_string == "Bad Sleeping Pose":
+        elif pose_status == "Bad Sleeping Pose":
             cv2.putText(annotated_frame, f"bad_stack : {bad_stack} / 150", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
             # cv2.putText(annotated_frame, "Bad Pose", (0, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 110, 205), 2)
         else: # "Danger Sleeping Pose"

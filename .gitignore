@@ -3,7 +3,8 @@ __pycache__/
 *.py[cod]
 
 *.pt
-dataset
+dataset/
+runs/
 
 firebase_flutter_notification
 .DS_Store

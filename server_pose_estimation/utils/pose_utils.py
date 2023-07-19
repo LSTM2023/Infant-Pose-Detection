@@ -1,32 +1,53 @@
-def get_longer_aspect(boxes):
-    # resolution_w = boxes.orig_shape[1] # Frame width
-    # resolution_h = boxes.orig_shape[0] # Frame height
-    single_box = boxes.xywh[0] # (Center x, Center y, w, h)
-    # single_box_n = boxes.xywhn[0] # Normalized (Center x, Center y, w, h)
-    
-    if single_box[2] < single_box[3]: # w < h
-        longer_aspect = 0
-    else: # w > h
-        longer_aspect = 1
+def determine_pose_orientation(box):
+    if box[2] < box[3]:
+        pose_orientation = 'vertical'
+    else:
+        pose_orientation = 'horizontal'
         
-    return longer_aspect
+    return pose_orientation
 
 
-def get_pose_info(kpts, aspect):   
-    no_stack = max(0, no_stack - 1)
-            
-    hand_kpts = (kpts[9][aspect], kpts[10][aspect])
-    condition1 = all(val > kpts[6][aspect] for val in hand_kpts)
-    condition2 = all(val < kpts[5][aspect] for val in hand_kpts)
+def get_kpt_coordinate(kpts):    
+    nose = kpts[0]
+    left_eye = kpts[1]
+    right_eye = kpts[2]    
+    left_ear = kpts[3]    
+    right_ear = kpts[4]    
+    left_shoulder = kpts[5]    
+    right_shoulder = kpts[6]    
+    left_elbow = kpts[7]    
+    right_elbow = kpts[8]    
+    left_wrist = kpts[9]    
+    right_wrist = kpts[10]    
+    left_hip = kpts[11]    
+    right_hip = kpts[12]    
+    left_knee = kpts[13]    
+    right_knee = kpts[14]    
+    left_ankle = kpts[15]    
+    right_ankle = kpts[16]
     
-    if (kpts[5][aspect] < kpts[6][aspect]) and (kpts[11][aspect] < kpts[12][aspect]): # 완전 뒤집힌 자세
-        bad_stack += 1
-        pose_string = "Dangerous Sleeping Pose"
-    elif condition1 or condition2: # 옆으로 누운 자세
-        bad_stack += 1
-        pose_string = "Bad Sleeping Pose"
+    return nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle
+
+
+def get_pose_status(kpts, orientation):  
+    orientation_dict = {
+        'vertical': 0,
+        'horizontal': 1
+    }
+    
+    nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle = get_kpt_coordinate(kpts)
+    
+    x_or_y = orientation_dict[orientation]
+    
+    wrist_kpts = (left_wrist[x_or_y], right_wrist[x_or_y])
+    condition_1 = all(val > right_shoulder[x_or_y] for val in wrist_kpts)
+    condition_2 = all(val < left_shoulder[x_or_y] for val in wrist_kpts)
+    
+    if (left_shoulder[x_or_y] < right_shoulder[x_or_y]) and (left_hip[x_or_y] < right_hip[x_or_y]): # 완전 뒤집힌 자세
+        pose_status = "Dangerous Sleeping Pose"
+    elif condition_1 or condition_2: # 옆으로 누운 자세
+        pose_status = "Bad Sleeping Pose"
     else: # 정상 자세
-        bad_stack = max(0, bad_stack - 1)
-        pose_string = "Normal Sleeping Pose"
+        pose_status = "Normal Sleeping Pose"
         
-    return no_stack, bad_stack, pose_string
+    return pose_status
