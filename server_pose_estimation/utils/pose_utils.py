@@ -1,7 +1,7 @@
 def determine_pose_orientation(box):
-    if box[2] < box[3]:
+    if box[2] < box[3]: # w < h
         pose_orientation = 'vertical'
-    else:
+    else: # w >= h
         pose_orientation = 'horizontal'
         
     return pose_orientation
