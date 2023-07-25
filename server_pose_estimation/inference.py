@@ -5,7 +5,7 @@ from ultralytics import YOLO
 
 from utils.pose_utils import determine_pose_orientation, get_pose_status
 from utils.text_utils import calculate_fps, put_text
-from notification import push_notification
+from notification import push_notification_for_abnormal_status
 
 model = YOLO('yolov8m-pose.pt')
 # model = YOLO('./runs/pose/train_m_16_640/weights/best.pt')
@@ -25,7 +25,8 @@ resize_resolution = (640, 480)
 #     cap.release()
 #     sys.exit()
 
-no_stack, bad_stack = 0, 0
+no_stack, bad_stack = 0, 0 # Stack
+stack_th = 150 # Stack Threshold
 
 # Loop through the video frames
 while cap.isOpened():
@@ -33,7 +34,7 @@ while cap.isOpened():
     success, frame = cap.read()
 
     if success:
-        # frame = cv2.resize(frame, resize_resolution) # TODO: Predict 후 resize 되게 변경하기. (?)
+        # frame = cv2.resize(frame, resize_resolution) # TODO: Predict 전 resize
         results = model(frame, stream=True, conf=0.6, verbose=False) # YOLOv8 inference on the frame
         fps_string = calculate_fps()
         
@@ -59,25 +60,20 @@ while cap.isOpened():
             
             alert_strings = ['Bad', 'Dangerous']
             if any(alert in pose_status_string for alert in alert_strings): # 'Bad' or 'Dangerous' in pose_status_string
-                bad_stack += 1 # bac_stack 1 증가
+                bad_stack += 1 # bad_stack 1 증가
             else: # 'Normal' in pose_status_string
                 bad_stack = max(0, bad_stack - 1) # bad_stack 1 감소 (최소: 0)
                 
-        finally:
-            if no_stack == 150:
-                no_stack = 0 # no_stack 초기화
-                # push_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
-            if bad_stack == 150:
-                bad_stack = 0 # bad_stack 초기화
-                # push_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
+        finally: # stack이 stack_th에 도달하면 stack을 초기화하고 사용자에게 알림 전송
+            no_stack, bad_stack = push_notification_for_abnormal_status(no_stack, bad_stack, stack_th)
                 
         # Visualize the results and put text on the frame -> annotated_frame
         annotated_frame = result.plot(labels=False) # TODO: 눈 어떻게 잡는거지?
-        annotated_frame = cv2.resize(annotated_frame, resize_resolution) # TODO: Predict 후 resize 되게 변경하기. (?)
-        annotated_frame = put_text(annotated_frame, fps_string, pose_status_string, no_stack, bad_stack)
+        annotated_frame = cv2.resize(annotated_frame, resize_resolution) # TODO: Predict 후 resize
+        annotated_frame = put_text(annotated_frame, fps_string, pose_status_string, no_stack, bad_stack, stack_th)
 
         # Display the annotated frame
-        cv2.imshow("YOLOv8 Inference", annotated_frame)
+        cv2.imshow("Infant Pose Detection", annotated_frame)
         # out.write(annotated_frame)
 
         # Break the loop if 'q' is pressed

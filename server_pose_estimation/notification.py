@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import messaging
 
-def push_notification(title, body):
+def send_notification(title, body):
     if not firebase_admin._apps:
         cred = credentials.Certificate(os.path.join(os.path.dirname(os.path.realpath(__file__)), "lstm-bob-firebase-adminsdk-gmh89-fac4fac367.json"))
         firebase_admin.initialize_app(cred)
@@ -18,6 +18,19 @@ def push_notification(title, body):
     message = messaging.MulticastMessage(notification=NOTIFICATION, tokens=TOKENS)
     messaging.send_multicast(message)
     print("Successfully Send Notification.")
+
+
+def push_notification_for_abnormal_status(n_stack, b_stack, th):
+    if n_stack == th:
+        n_stack = 0 # n_stack 초기화
+        send_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
+        
+    if b_stack == th:
+        b_stack = 0 # b_stack 초기화
+        send_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
+        
+    return n_stack, b_stack
+    
     
 if __name__ == '__main__':
-    push_notification("", "")
+    send_notification("For Test", "지금은 Testing")

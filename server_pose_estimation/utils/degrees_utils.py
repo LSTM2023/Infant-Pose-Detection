@@ -1,4 +1,5 @@
 import numpy as np
+from pose_utils import get_kpt_coordinate
 
 def vector_between_points(p1, p2):
     return np.array(p2) - np.array(p1)
@@ -21,13 +22,11 @@ def angle_between_vectors(v1, v2):
     return degrees
 
 
-def get_angle(single_kpts):
-    point_a = single_kpts[5]
-    point_b = single_kpts[7]
-    point_c = single_kpts[9]
+def get_angle(kpts):
+    nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle = get_kpt_coordinate(kpts)
     
-    vector_a = vector_between_points(point_b, point_a)
-    vector_b = vector_between_points(point_b, point_c)
+    vector_a = vector_between_points(right_shoulder, right_elbow)
+    vector_b = vector_between_points(right_elbow, right_wrist)
 
     angle = angle_between_vectors(vector_a, vector_b)
     
