@@ -1,6 +1,7 @@
 import sys
-import time
+
 import cv2
+
 from ultralytics import YOLO
 
 from utils.pose_utils import determine_pose_orientation, get_pose_status
@@ -16,7 +17,7 @@ video_path ="./dataset/test/real_baby_1.mp4"
 
 cap = cv2.VideoCapture(video_path)
 fps = cap.get(cv2.CAP_PROP_FPS)
-resize_resolution = (640, 480)
+resize_resolution = (480, 640)
 
 # fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 # out = cv2.VideoWriter("save_video.mp4", fourcc, fps, resize_resolution)
@@ -34,9 +35,9 @@ while cap.isOpened():
     success, frame = cap.read()
 
     if success:
-        # frame = cv2.resize(frame, resize_resolution) # TODO: Predict 전 resize
+        frame = cv2.resize(frame, resize_resolution) # Predict 전 resize
         results = model(frame, stream=True, conf=0.6, verbose=False) # YOLOv8 inference on the frame
-        fps_string = calculate_fps()
+        fps_str = calculate_fps()
         
         for result in results:
             result = result.cpu().numpy()
@@ -50,27 +51,27 @@ while cap.isOpened():
             
         except Exception as e: # 예외 발생 o
             no_stack += 1 # no_stack 1 증가
-            pose_status_string = "There is no BBox."
+            pose_status = "There is no BBox."
             
         else: # 예외 발생 x
             no_stack = max(0, no_stack - 1) # no_stack 1 감소 (최소: 0)
 
             pose_orientation = determine_pose_orientation(first_box)
-            pose_status_string = get_pose_status(first_kpts, pose_orientation)
+            pose_status = get_pose_status(first_kpts, pose_orientation)
             
-            alert_strings = ['Bad', 'Dangerous']
-            if any(alert in pose_status_string for alert in alert_strings): # 'Bad' or 'Dangerous' in pose_status_string
+            warning_type = ['Bad', 'Dangerous']
+            if any(warning in pose_status for warning in warning_type): # 'Bad' or 'Dangerous' in pose_status
                 bad_stack += 1 # bad_stack 1 증가
-            else: # 'Normal' in pose_status_string
+            else: # 'Normal' in pose_status
                 bad_stack = max(0, bad_stack - 1) # bad_stack 1 감소 (최소: 0)
                 
         finally: # stack이 stack_th에 도달하면 stack을 초기화하고 사용자에게 알림 전송
             no_stack, bad_stack = push_notification_for_abnormal_status(no_stack, bad_stack, stack_th)
                 
         # Visualize the results and put text on the frame -> annotated_frame
-        annotated_frame = result.plot(labels=False) # TODO: 눈 어떻게 잡는거지?
-        annotated_frame = cv2.resize(annotated_frame, resize_resolution) # TODO: Predict 후 resize
-        annotated_frame = put_text(annotated_frame, fps_string, pose_status_string, no_stack, bad_stack, stack_th)
+        annotated_frame = result.plot(labels=False)
+        # annotated_frame = cv2.resize(annotated_frame, resize_resolution) # Predict 후 resize
+        annotated_frame = put_text(annotated_frame, fps_str, pose_status, no_stack, bad_stack, stack_th)
 
         # Display the annotated frame
         cv2.imshow("Infant Pose Detection", annotated_frame)

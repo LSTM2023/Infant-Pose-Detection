@@ -1,4 +1,5 @@
 import os
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import messaging
@@ -23,11 +24,11 @@ def send_notification(title, body):
 def push_notification_for_abnormal_status(n_stack, b_stack, th):
     if n_stack == th:
         n_stack = 0 # n_stack 초기화
-        send_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
+        # send_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
         
     if b_stack == th:
         b_stack = 0 # b_stack 초기화
-        send_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
+        # send_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
         
     return n_stack, b_stack
     

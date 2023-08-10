@@ -29,24 +29,27 @@ def get_kpt_coordinate(kpts):
     return nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle
 
 
-def get_pose_status(kpts, orientation):  
+def get_pose_status(kpts, orientation): # TODO: 모든 방향에 Pose Detection Algorithm 적용되게 수정하기
     orientation_dict = {
         'vertical': 0,
         'horizontal': 1
     }
-    
-    nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle = get_kpt_coordinate(kpts)
-    
     x_or_y = orientation_dict[orientation]
     
-    wrist_kpts = (left_wrist[x_or_y], right_wrist[x_or_y])
-    condition_1 = all(val > right_shoulder[x_or_y] for val in wrist_kpts)
-    condition_2 = all(val < left_shoulder[x_or_y] for val in wrist_kpts)
+    nose, left_eye, right_eye, left_ear, right_ear, left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist, left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle = get_kpt_coordinate(kpts) # TODO: [x_or_y] 미리 다 적용하기
     
-    if (left_shoulder[x_or_y] < right_shoulder[x_or_y]) and (left_hip[x_or_y] < right_hip[x_or_y]): # 완전 뒤집힌 자세
-        pose_status = "Dangerous Sleeping Pose"
-    elif condition_1 or condition_2: # 옆으로 누운 자세
+    both_wrist = (left_wrist[x_or_y], right_wrist[x_or_y])
+    left_arm = (left_elbow[x_or_y], left_wrist[x_or_y])
+    right_arm = (right_elbow[x_or_y], right_wrist[x_or_y])
+    
+    # TODO: Pose Detection Algorithm 수정
+    is_lying_side = (all(wrist > right_shoulder[x_or_y] for wrist in both_wrist)) or (all(wrist < left_shoulder[x_or_y] for wrist in both_wrist)) # 왼쪽 or 오른쪽으로 누운 자세
+    is_lying_back = (all(left_arm_joint < left_shoulder[x_or_y] for left_arm_joint in left_arm)) and (all(right_arm_joint > right_shoulder[x_or_y] for right_arm_joint in right_arm)) # 뒤집혀서 누운 자세
+        
+    if is_lying_side: # 옆으로 누운 자세
         pose_status = "Bad Sleeping Pose"
+    elif is_lying_back: # 완전 뒤집힌 자세
+        pose_status = "Dangerous Sleeping Pose"
     else: # 정상 자세
         pose_status = "Normal Sleeping Pose"
         
