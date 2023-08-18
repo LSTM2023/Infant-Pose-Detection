@@ -1,0 +1,60 @@
+name: C/C++ CI linux cross compilation arm64/armhf/mips
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+        - buildtype: Debug
+          system: arm64
+          crosscompiler: aarch64-linux-gnu
+        - buildtype: Release
+          system: arm64
+          crosscompiler: aarch64-linux-gnu
+
+        - buildtype: Debug
+          system: armhf
+          crosscompiler: arm-linux-gnueabihf
+        - buildtype: Release
+          system: armhf
+          crosscompiler: arm-linux-gnueabihf
+
+        - buildtype: Debug
+          system: mips
+          crosscompiler: mips-linux-gnu
+        - buildtype: Release
+          system: mips
+          crosscompiler: mips-linux-gnu
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: pkg
+      run: | 
+        sudo apt-get update 
+        sudo apt-get install -y --no-install-recommends ca-certificates xz-utils cmake make pkg-config git g++-${{ matrix.crosscompiler }}
+
+    - name: build
+      run: |
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.system }} -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_C_COMPILER=${{ matrix.crosscompiler }}-gcc -DCMAKE_CXX_COMPILER=${{ matrix.crosscompiler }}-g++ -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY -DCMAKE_FIND_ROOT_PATH=/usr/aarch64-linux-gnu .
+          make
+
+    - name: cpack 
+      run: | 
+          cpack
+          echo "artifactPath=$(ls *.deb)" >> $GITHUB_ENV
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.artifactPath }}
+        path: ${{ env.artifactPath }}   
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ${{ env.artifactPath }}

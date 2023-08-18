@@ -1,0 +1,16 @@
+# cmake
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+Makefile
+# build
+*.a
+*.service
+v4l2rtspserver
+# cpack
+_CPack_Packages
+install_manifest.txt
+*.deb
+#live
+live/
+live555-latest.tar.gz

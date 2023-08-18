@@ -1,0 +1,41 @@
+
+  name: v4l2-rtspserver
+  base: core22
+  version: git
+  summary: RTSP Server for V4L2 device capture supporting HEVC/H264/JPEG/VP8/VP9
+  description: |
+    This is a lightweight streamer feed from :
+    * an Video4Linux device that support H264, HEVC, JPEG, VP8 or VP9 capture.
+    * an ALSA device that support PCM S16_BE, S16_LE, S32_BE or S32_LE
+    The RTSP server support :
+    * RTP/UDP unicast
+    * RTP/UDP multicast
+    * RTP/TCP
+    * RTP/RTSP/HTTP
+    The HTTP server support (available using -S option for capture format that could be muxed in Transport Stream):
+    * HLS
+    * MPEG-DASH
+    It could run on personnal computer, but also on raspberry-pi, nano-pi or onion-omega2+.
+
+  grade: stable 
+  confinement: strict
+
+  parts:
+    v4l2rtspserver:
+      plugin: cmake
+      source: .
+      source-type: git
+      build-packages:
+      - g++
+      - pkg-config
+      - libasound2-dev
+      - libssl-dev      
+      stage-packages:
+      - libasound2
+      - libssl3      
+
+  apps:
+    v4l2rtspserver:
+      command: usr/local/bin/v4l2rtspserver -b $SNAP/usr/local/share/v4l2rtspserver/
+      daemon: simple   
+      plugs: [network-bind, camera, alsa]
