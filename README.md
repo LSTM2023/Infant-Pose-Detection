@@ -5,3 +5,5 @@ Source : Video transmitted from the Raspberry Pi's Camera Module
 
 Trained with SyRIP Dataset:
 Can Download at [Infant-Pose-Estimation GitHub Repo by ostadabbas](https://github.com/ostadabbas/Infant-Pose-Estimation)
+
+Sending Alert to Application : with Firebase System
