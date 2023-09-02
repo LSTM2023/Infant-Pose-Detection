@@ -4,19 +4,19 @@ import cv2
 
 from ultralytics import YOLO
 
-from utils.pose_utils import determine_pose_orientation, get_pose_status
+from utils.pose_utils import get_pose_status
 from utils.text_utils import calculate_fps, put_text
-from notification import push_notification_for_abnormal_status
+from utils.notification import push_notification_for_abnormal_status
 
 model = YOLO('yolov8m-pose.pt') # Base Model
 # model = YOLO('./runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
 # model = YOLO('./runs/pose/train_l_16_640/weights/best.pt') # Fine-Tuned Model
 
 # Open the input video file
-# video_path ="./dataset/test/real_baby_1.mp4" # Test
-# video_path = "http://203.249.22.164:5000/video_feed" # Flask Streaming Server
+video_path = "./dataset/test/real_baby_1.mp4" # Test
+# video_path = "http://203.249.22.164:5001/video_feed" # Flask Streaming Server
 # video_path = "rtsp://210.99.70.120:1935/live/cctv001.stream" # RSTP Sample
-video_path = "rtsp://203.249.22.164:8080/unicast" # v4l2 RTSP Server
+# video_path = "rtsp://203.249.22.164:8080/unicast" # v4l2 RTSP Server
 
 cap = cv2.VideoCapture(video_path)
 # cap.set(cv2.CAP_PROP_BUFFERSIZE, 30)
@@ -30,7 +30,7 @@ cap = cv2.VideoCapture(video_path)
 #     cap.release()
 #     sys.exit()
 
-resize_resolution = (640, 480)
+resize_ratio = 0.4
 no_stack, bad_stack = 0, 0 # Stack
 stack_th = 150 # Stack Threshold
 
@@ -40,7 +40,7 @@ while cap.isOpened():
     success, frame = cap.read()
 
     if success:
-        # frame = cv2.resize(frame, resize_resolution)
+        frame = cv2.resize(frame, (int(frame.shape[1]*resize_ratio), int(frame.shape[0]*resize_ratio)))
         results = model(frame, stream=True, conf=0.6, verbose=False) # YOLOv8 inference on the frame
         fps_str = calculate_fps()
         
@@ -61,8 +61,7 @@ while cap.isOpened():
         else: # 예외 발생 x
             no_stack = max(0, no_stack - 1) # no_stack 1 감소 (최소: 0)
 
-            pose_orientation = determine_pose_orientation(first_box)
-            pose_status = get_pose_status(first_kpts, pose_orientation)
+            pose_status = get_pose_status(first_kpts)
             
             warning_type = ['Bad', 'Dangerous']
             if any(warning in pose_status for warning in warning_type): # 'Bad' or 'Dangerous' in pose_status
@@ -75,7 +74,7 @@ while cap.isOpened():
                 
         # Visualize the results and put text on the frame -> annotated_frame
         annotated_frame = result.plot(labels=False)
-        annotated_frame = cv2.resize(annotated_frame, resize_resolution)
+        # annotated_frame = cv2.resize(annotated_frame, (int(frame.shape[1]*resize_ratio), int(frame.shape[0]*resize_ratio)))
         annotated_frame = put_text(annotated_frame, fps_str, pose_status, no_stack, bad_stack, stack_th)
 
         # Display the annotated frame
