@@ -1,35 +1,28 @@
 import os
+import json
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import messaging
 
+
 def send_notification(title, body):
+    fcm_path = '/home/psw/LSTM/Infant-Pose-Detection/firebase_cloud_messaging/'
+    
+    with open(os.path.join(fcm_path, 'fcm.json'), 'r') as f:
+        fcm_json = json.load(f)
+        
     if not firebase_admin._apps:
-        cred = credentials.Certificate(os.path.join(os.path.dirname(os.path.realpath(__file__)), "lstm-bob-firebase-adminsdk-gmh89-fac4fac367.json"))
+        cred = credentials.Certificate(os.path.join(fcm_path, fcm_json['firebase_key_path']))
         firebase_admin.initialize_app(cred)
 
     NOTIFICATION = messaging.Notification(title=title, body=body)
     
-    jh_TOKEN = "cAqsSkPgTLmb8uxBJsZ38F:APA91bEyJ3-ugDNuYphBx_jJJv7w72Kh37sV1XKdC5fPKXR7lQxNZqpuI-9N_S3o7FJHGnELbdRwiiHgoJfxFAamvnhpUIxbLA4tf-uKit2kBKRnpOI7lP4FkwN4DLUjmn1p89-D0-Yh"
-    sh_TOKEN = "c8I_Mw5kQhq5Ub1gQ0Pc7d:APA91bF9XtUXSnubty-W-ltgxElC9ZCT3TsOZ5O2omDYeruXrnqV7HaNb5UZt0I1bT5COaoqm0wz29thdak_CUQf24lLPaFTRmWwuj-zcmHD_I_j5nwkA7QWjWXIq2ge4wEyxU2Gt7yK"
-    TOKENS = [jh_TOKEN, sh_TOKEN]
+    TOKENS = [fcm_json['jh_TOKEN'], fcm_json['sh_TOKEN']]
     
     message = messaging.MulticastMessage(notification=NOTIFICATION, tokens=TOKENS)
     messaging.send_multicast(message)
     print("Successfully Send Notification.")
-
-
-def push_notification_for_abnormal_status(n_stack, b_stack, th):
-    if n_stack == th:
-        n_stack = 0 # n_stack 초기화
-        # send_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
-        
-    if b_stack == th:
-        b_stack = 0 # b_stack 초기화
-        # send_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
-        
-    return n_stack, b_stack
     
     
 if __name__ == '__main__':

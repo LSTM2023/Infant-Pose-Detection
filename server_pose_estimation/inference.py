@@ -6,7 +6,7 @@ from ultralytics import YOLO
 
 from utils.pose_utils import get_pose_status
 from utils.text_utils import calculate_fps, put_text
-from utils.notification import push_notification_for_abnormal_status
+from utils.notification import send_notification
 
 model = YOLO('yolov8m-pose.pt') # Base Model
 # model = YOLO('./runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
@@ -70,7 +70,13 @@ while cap.isOpened():
                 bad_stack = max(0, bad_stack - 1) # bad_stack 1 감소 (최소: 0)
                 
         finally: # stack이 stack_th에 도달하면 stack을 초기화하고 사용자에게 알림 전송
-            no_stack, bad_stack = push_notification_for_abnormal_status(no_stack, bad_stack, stack_th)
+            if no_stack == stack_th:
+                no_stack = 0 # n_stack 초기화
+                # send_notification("아이 미탐지", "아이의 수면 자세가 탐지되지 않습니다. 확인해주세요!")
+                
+            if bad_stack == stack_th:
+                bad_stack = 0 # b_stack 초기화
+                # send_notification("비정상 수면 자세", "아이의 수면 자세가 위험할 수 있으니, 확인해주세요!")
                 
         # Visualize the results and put text on the frame -> annotated_frame
         annotated_frame = result.plot(labels=False)

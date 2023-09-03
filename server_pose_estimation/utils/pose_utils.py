@@ -47,7 +47,6 @@ def get_pose_status(kpts):
     is_lying_side = (all(wrist > right_shoulder[is_x_or_y] for wrist in (left_wrist[is_x_or_y], right_wrist[is_x_or_y]))) or (all(wrist < left_shoulder[is_x_or_y] for wrist in (left_wrist[is_x_or_y], right_wrist[is_x_or_y]))) # 왼쪽 or 오른쪽으로 누운 자세
 
     is_lying_back = (left_elbow[is_x_or_y] < left_shoulder[is_x_or_y]) and (right_elbow[is_x_or_y] > right_shoulder[is_x_or_y]) and ((left_shoulder[is_x_or_y] < right_shoulder[is_x_or_y]) and (left_hip[is_x_or_y] < right_hip[is_x_or_y])) # 뒤집혀서 누운 자세
-        
     
     if is_lying_side: # 옆으로 누운 자세
         pose_status = "Bad Sleeping Pose"

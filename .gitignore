@@ -6,5 +6,5 @@ __pycache__/
 dataset/
 runs/
 
-firebase_flutter_notification
+firebase_cloud_messaging/
 .DS_Store
