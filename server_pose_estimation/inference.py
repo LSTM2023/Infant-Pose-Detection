@@ -1,5 +1,3 @@
-import sys
-
 import cv2
 
 from ultralytics import YOLO
@@ -10,29 +8,20 @@ from utils.notification import send_notification
 
 # model = YOLO('yolov8m-pose.pt') # Base Model
 model = YOLO('./runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
-# model = YOLO('./runs/pose/train_l_16_640/weights/best.pt') # Fine-Tuned Model
 
 # Open the input video file
 # video_path = "http://203.249.22.164:5001/video_feed" # Flask Streaming Server
 # video_path = "rtsp://210.99.70.120:1935/live/cctv001.stream" # RSTP Sample
-# video_path = "rtsp://203.249.22.164:8080/unicast" # v4l2 RTSP Server
-video_path = "./dataset/test/real_baby_1.mp4" # Test
+video_path = "rtsp://203.249.22.164:8080/unicast" # v4l2 RTSP Server
+# video_path = "./dataset/test/real_baby_1.mp4" # Test
 
 cap = cv2.VideoCapture(video_path)
 # cap.set(cv2.CAP_PROP_BUFFERSIZE, 30)
 # print(cap.get(cv2.CAP_PROP_BUFFERSIZE))
-    
-# fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-# fps = cap.get(cv2.CAP_PROP_FPS)
-# out = cv2.VideoWriter("save_video.mp4", fourcc, fps, resize_resolution)
 
-# if not out.isOpened():
-#     cap.release()
-#     sys.exit()
-
-resize_ratio = 0.4
+resize_ratio = 0.7
 wrong_stack, danger_stack = 0, 0 # Stack
-stack_th = 200 # Stack Threshold
+stack_th = 300 # Stack Threshold
 
 # Loop through the video frames
 while cap.isOpened():
@@ -89,7 +78,6 @@ while cap.isOpened():
 
         # Display the annotated frame
         cv2.imshow("Infant Pose Detection", annotated_frame)
-        # out.write(annotated_frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -100,5 +88,4 @@ while cap.isOpened():
 
 # Release the video capture object and close the display window
 cap.release()
-# out.release()
 cv2.destroyAllWindows()
