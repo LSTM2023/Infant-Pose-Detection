@@ -18,7 +18,7 @@ def send_notification(title, body):
 
     NOTIFICATION = messaging.Notification(title=title, body=body)
     
-    TOKENS = [fcm_json['tablet_TOKEN'], fcm_json['phone_TOKEN']]
+    TOKENS = [fcm_json['emul_TOKEN'], fcm_json['phone_TOKEN'], fcm_json['tablet_TOKEN']]
     
     message = messaging.MulticastMessage(notification=NOTIFICATION, tokens=TOKENS)
     messaging.send_multicast(message)
