@@ -7,7 +7,7 @@ from firebase_admin import messaging
 
 
 def send_notification(title, body):
-    fcm_path = '/home/psw/LSTM/Infant-Pose-Detection/firebase_cloud_messaging/'
+    fcm_path = './firebase_cloud_messaging/'
     
     with open(os.path.join(fcm_path, 'fcm.json'), 'r') as f:
         fcm_json = json.load(f)
