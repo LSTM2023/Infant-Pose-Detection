@@ -2,9 +2,10 @@
 __pycache__/
 *.py[cod]
 
-*.pt
-dataset/
-runs/
+firebase_cloud_messaging/*
 
-firebase_cloud_messaging/
+server_pose_estimation/fine_tuning/dataset/
+server_pose_estimation/fine_tuning/runs/
+*.pt
+
 .DS_Store
