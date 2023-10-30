@@ -7,12 +7,12 @@ from utils.text_utils import calculate_fps, put_text
 from utils.notification import send_notification
 
 # model = YOLO('yolov8m-pose.pt') # Base Model
-model = YOLO('./runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
+model = YOLO('./fine_tuning/runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
 
 # Open the input video file
 # video_path = "http://203.249.22.164:5001/video_feed" # Flask Streaming Server
 # video_path = "rtsp://210.99.70.120:1935/live/cctv001.stream" # RSTP Sample
-video_path = "rtsp://203.249.22.164:8080/unicast" # v4l2 RTSP Server
+video_path = "rtsp://203.249.22.164:9001/unicast" # v4l2 RTSP Server
 # video_path = "./dataset/test/real_baby_1.mp4" # Test
 
 cap = cv2.VideoCapture(video_path)
