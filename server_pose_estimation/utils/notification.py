@@ -13,7 +13,7 @@ def send_notification(title, body):
         fcm_json = json.load(f)
         
     if not firebase_admin._apps:
-        cred = credentials.Certificate(os.path.join(fcm_path, fcm_json['firebase_key_path']))
+        cred = credentials.Certificate(os.path.join(fcm_path, fcm_json['private_service_key']))
         firebase_admin.initialize_app(cred)
 
     NOTIFICATION = messaging.Notification(title=title, body=body)
