@@ -15,14 +15,17 @@ The code is developed using python 3.10 on Ubuntu 22.04. NVIDIA GPUs are needed.
 ```shell
 git clone https://github.com/LSTM2023/Infant-Pose-Detection
 ```
+
 2. Set up a virtual environment such as venv or conda and install the requirements required.
 ```shell
 python3 -m pip install -r requirements.txt
 ```
+
 3. Make directory.
 ```shell
 mkdir firebase_cloud_messaging
 ```
+
 4. Place the json file related to the FCM service account private key in the "firebase_cloud_messaging" directory for sending notifications .
 ```
 ${Repo Root}
@@ -31,6 +34,7 @@ ${Repo Root}
 ├── raspberry_pi
 └── server_pose_estimation
 ```
+
 5. Create a file fcm.json, write it in the format shown below, and place it in the same directory, "firebase_cloud_messaging".
 ```JSON
 {
@@ -48,12 +52,85 @@ ${Repo Root}
 ├── raspberry_pi
 └── server_pose_estimation
 ```
+
 6. Just run inference.py in the server_pose_estimation directory.
-```shell
+```
 cd server_pose_estimation
 
 python3 inference.py
 ```
+
+## Model Fine-Tuning
+### Data preparation
+1. Please download SyRIP dataset from here. Download and extract them under ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset with the name of 'SyRIP_COCO', and make them look like this:
+```shell
+${Repo Root}
+├── firebase_cloud_messaging
+├── raspberry_pi
+└── server_pose_estimation
+    └── fine_tuning
+        └── dataset
+            └── SyRIP_COCO
+                ├── annotations
+                ├── images
+                └── README.md
+```
+
+2. Convert the dataset from coco format annotations to yolo format labels using coco_to_yolo.py in ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset. You can specify the dataset to be converted by changing the path name specified in the code. Then, you can check the .txt format files containing the labels for each image in a directory named yolo_labels.
+```shell
+python3 coco_to_yolo.py
+```
+
+3. Create a SyRIP_YOLO directory in ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset and place the images and labels to be used for train and validation in it as follows.
+```shell
+${Repo Root}
+├── firebase_cloud_messaging
+├── raspberry_pi
+└── server_pose_estimation
+    └── fine_tuning
+        └── dataset
+            ├── SyRIP_COCO
+            └── SyRIP_YOLO
+                ├── ${for_train}
+                │   ├── images
+                │   │   ├── train00001.jpg
+                │   │   ├── train00002.jpg
+                │   │   ├── ...
+                │   │   └── train10999.jpg
+                │   └── labels
+                │       ├── train00001.txt
+                │       ├── train00002.txt
+                │       ├── ...
+                │       └── train10999.txt
+                └── ${for_valid}
+                    ├── images
+                    │   ├── test0.jpg
+                    │   ├── test1.jpg
+                    │   ├── ...
+                    │   └── test499.jpg
+                    └── labels
+                        ├── test0.txt
+                        ├── test1.txt
+                        ├── ...
+                        └── test499.txt
+```
+
+4. After that, modify the path in SyRIP-pose.yaml to match \${for_train} and \${for_valid}.
+```yaml
+train: ${for_train}  # train images
+val: ${for_valid}  # val images
+```
+
+### Train and Validation (Results)
+
+
+
+
+
+
+
+
+
 
 ## Directory Structure
 ```shell
@@ -75,15 +152,9 @@ ${Repo Root}
 └── requirements.txt
 ```
 
-## How it works?
-
-## Train
-#### Data Preparation
-
 ## Raspberry Pi
 
-## Documentation
-노션?
+## How it works?
 
 ## License
 Infant-Pose-Detection is released under the [AGPL-3.0 License](https://github.com/LSTM2023/Infant-Pose-Detection/blob/main/LICENSE).
