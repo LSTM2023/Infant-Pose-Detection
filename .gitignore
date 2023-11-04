@@ -2,8 +2,7 @@
 __pycache__/
 *.py[cod]
 
-firebase_cloud_messaging/*
-
+server_pose_estimation/firebase_cloud_messaging/
 server_pose_estimation/fine_tuning/dataset/
 server_pose_estimation/fine_tuning/runs/
 *.pt
