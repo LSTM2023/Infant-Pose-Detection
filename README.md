@@ -5,7 +5,7 @@
 
 * When inappropriate posture is detected, a notification is sent to the user's app.
 
-* This project used Raspberry Pi and Camera Module as IoT means for video.
+* In this project, we used Raspberry Pi, camera module, v4l2rtspserver library as IoT means for video.
 
 ## Environment
 The code is developed using python 3.10 on Ubuntu 22.04. NVIDIA GPUs are needed. The code is developed and tested using two NVIDIA RTX 2080 SUPER GPU card. Other platforms or GPU cards are not fully tested.
@@ -21,21 +21,21 @@ git clone https://github.com/LSTM2023/Infant-Pose-Detection
 python3 -m pip install -r requirements.txt
 ```
 
-3. Make directory.
+3. Make directory named firebase_cloud_messaging in '${Repo Root}/server_pose_estimation/firebase_cloud_messaging'.
 ```shell
 mkdir firebase_cloud_messaging
 ```
 
-4. Place the json file related to the FCM service account private key in the "firebase_cloud_messaging" directory for sending notifications .
-```
+4. Place the json file related to the FCM service account private key in the ${Repo Root}/server_pose_estimation/firebase_cloud_messaging for sending notifications .
+```shell
 ${Repo Root}
-├── firebase_cloud_messaging
-│   └── fcm_service_account_key.json
 ├── raspberry_pi
 └── server_pose_estimation
+    └── firebase_cloud_messaging
+        └── fcm_service_account_key.json
 ```
 
-5. Create a file fcm.json, write it in the format shown below, and place it in the same directory, "firebase_cloud_messaging".
+5. Create a file fcm.json, write it in the format shown below, and place it in the same directory, ${Repo Root}/server_pose_estimation/firebase_cloud_messaging.
 ```JSON
 {
     "private_service_key": "fcm_service_account_key.json",
@@ -44,19 +44,17 @@ ${Repo Root}
     "tablet_TOKEN": "TOKEN of Tablet Device"
 }
 ```
-```
+```shell
 ${Repo Root}
-├── firebase_cloud_messaging
-│   ├── fcm.json
-│   └── fcm_service_account_key.json
 ├── raspberry_pi
 └── server_pose_estimation
+    └── firebase_cloud_messaging
+        ├── fcm_service_account_key.json
+        └── fcm.json
 ```
 
-6. Just run inference.py in the server_pose_estimation directory.
+6. Just run inference.py in the ${Repo Root}/server_pose_estimation directory.
 ```
-cd server_pose_estimation
-
 python3 inference.py
 ```
 
@@ -65,7 +63,6 @@ python3 inference.py
 1. Please download SyRIP dataset from here. Download and extract them under ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset with the name of 'SyRIP_COCO', and make them look like this:
 ```shell
 ${Repo Root}
-├── firebase_cloud_messaging
 ├── raspberry_pi
 └── server_pose_estimation
     └── fine_tuning
@@ -121,10 +118,18 @@ train: ${for_train}  # train images
 val: ${for_valid}  # val images
 ```
 
-### Train and Validation (Results)
+### Train and validation (Results)
+1. Just run train.py in the ${Repo Root}/server_pose_estimation/finetuning directory. You can edit You can edit You can edit You can edit You can edit You can edit 
+```
+python3 train.py
+```
 
+2. And you can check the performance of each model through valid.py.
+```
+python3 valid.py
+```
 
-
+우리는 다르게 사용한거
 
 
 
@@ -135,15 +140,25 @@ val: ${for_valid}  # val images
 ## Directory Structure
 ```shell
 ${Repo Root}
-├── firebase_cloud_messaging
-│   ├── fcm.json
-│   └── fcm_service_account_key.json
 ├── raspberry_pi
 │   ├── humid_temp_sensor
-│   ├── v4l2rtspserver
+│   └── v4l2rtspserver
 ├── server_pose_estimation
 │   ├── fine_tuning
+│   │    ├── dataset
+│   │    │   └── ...
+│   │    ├── coco_to_yolo.py
+│   │    ├── train.py
+│   │    ├── valid.py
+│   │    └── SyRIP-pose.yaml
+│   ├── firebase_cloud_messaging
+│   │   ├── fcm.json
+│   │   └── fcm_service_account_key.json
 │   ├── utils
+│   │    ├── degrees_utils.py
+│   │    ├── notification.py
+│   │    ├── pose_utils.py
+│   │    └── text_utils.py
 │   ├── img_demo.py
 │   └── inference.py
 ├── .gitignore
