@@ -5,7 +5,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import messaging
 
-
 def send_notification(title, body):
     fcm_path = './firebase_cloud_messaging/'
     
