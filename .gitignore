@@ -10,6 +10,4 @@ server_pose_estimation/fine_tuning/dataset/
 server_pose_estimation/fine_tuning/runs/
 *.pt
 
-README_src/
-
 .DS_Store
