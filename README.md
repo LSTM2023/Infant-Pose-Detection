@@ -1,4 +1,12 @@
-# Infant Pose Detection with Raspberry Pi Streaming System
+<h1 align="center">Infant Pose Detection</h1>
+
+<p align="center">
+<a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL v3"></a>&nbsp
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white" alt="Python"></a>&nbsp
+<a href="https://pjreddie.com/darknet/yolo/"><img src="https://img.shields.io/badge/YOLO v8-6cc644?style=flat" alt="YOLO v8"></a>
+</p>
+
+<p align="center"><b>Infant Pose Detection with Raspberry Pi's Streaming System</b></p>
 
 ## Introduction
 * Predicts the baby's posture through Deep Learning - Pose Estimation technology and performs algorithm-based inappropriate posture detection based on the predicted posture.
