@@ -5,7 +5,7 @@
 
 * When inappropriate posture is detected, a notification is sent to the user's app.
 
-* In this project, we used Raspberry Pi, camera module, v4l2rtspserver library as IoT means for video.
+* In this project, we used Raspberry Pi, camera module, [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver) library as IoT means for video.
 
 ## Environment
 The code is developed using python 3.10 on Ubuntu 22.04. NVIDIA GPUs are needed. The code is developed and tested using two NVIDIA RTX 2080 SUPER GPU card. Other platforms or GPU cards are not fully tested.
@@ -58,9 +58,12 @@ ${Repo Root}
 python3 inference.py
 ```
 
+7. You can check how inference progresses! </br></br>
+<img src="README_src/image_1.png" alt="Alt text" width="300"/>
+
 ## Model Fine-Tuning
 ### Data preparation
-1. Please download SyRIP dataset from here. Download and extract them under ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset with the name of 'SyRIP_COCO', and make them look like this:
+1. Please download SyRIP dataset from [here](https://github.com/ostadabbas/Infant-Pose-Estimation#data-preparation). Download and extract them under ${Repo_ROOT}/server_pose_estimation/fine_tuning/dataset with the name of 'SyRIP_COCO', and make them look like this:
 ```shell
 ${Repo Root}
 ├── raspberry_pi
@@ -119,25 +122,24 @@ val: ${for_valid}  # val images
 ```
 
 ### Train and validation (Results)
-1. Just run train.py in the ${Repo Root}/server_pose_estimation/finetuning directory. You can edit You can edit You can edit You can edit You can edit You can edit 
+* Just run train.py in the ${Repo Root}/server_pose_estimation/finetuning directory. You can edit You can edit You can edit You can edit You can edit You can edit 
 ```
 python3 train.py
 ```
 
-2. And you can check the performance of each model through valid.py.
+* And you can check the performance of each model through valid.py.
 ```
 python3 valid.py
 ```
 
-우리는 다르게 사용한거
+* In our case, fine-tuning was performed by reconstructing the existing dataset as follows.</br></br>
+<img src="README_src/image_2.png" alt="Alt text" width="1000"/>
 
+* The results of fine-tuning conducted with the reconstructed dataset are as follows.</br></br>
+<img src="README_src/image_3.png" alt="Alt text" width="1000"/></br>
+<img src="README_src/image_4.png" alt="Alt text" width="500"/>
 
-
-
-
-
-
-## Directory Structure
+<!-- ## Directory Structure
 ```shell
 ${Repo Root}
 ├── raspberry_pi
@@ -165,11 +167,18 @@ ${Repo Root}
 ├── LICENSE
 ├── README.md
 └── requirements.txt
-```
+``` -->
+
+## How it works? (Pose Detection Algorithm)
+We use [YOLOv8-pose model from ultralytics](https://docs.ultralytics.com/tasks/pose/) to estimate the baby's pose, and use the coordinates of each body joint obtained through this to detect the baby's abnormal sleeping posture. The image below is an abnormal sleeping posture detection algorithm, and a detailed description of the algorithm is described in ${Repo Root}/server_pose_estimation/utils/pose_utils.py.</br></br>
+<img src="README_src/image_5.png" alt="Alt text" width="1000"/></br>
 
 ## Raspberry Pi
+* We used Debian 10, Buster version of Raspberry Pi 4B model, and used [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver) library to transmit video to the server and app.
 
-## How it works?
+* It is configured to measure temperature and humidity using the DHT11 sensor along with the camera module.
+
+### How to set up Raspberry Pi
 
 ## License
 Infant-Pose-Detection is released under the [AGPL-3.0 License](https://github.com/LSTM2023/Infant-Pose-Detection/blob/main/LICENSE).
