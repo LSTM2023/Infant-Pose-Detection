@@ -1,11 +1,12 @@
 <h1 align="center">Infant Pose Detection</h1>
 
 <p align="center">
+<img src="https://github.com/LSTM2023/Infant-Pose-Detection/assets/99634832/d5bea421-6b9e-4c92-8b96-5bded0d1dcce" alt="Alt text" width="500"/></br>
 <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL v3"></a>&nbsp
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white" alt="Python"></a>&nbsp
 <a href="https://pjreddie.com/darknet/yolo/"><img src="https://img.shields.io/badge/YOLO v8-6cc644?style=flat" alt="YOLO v8"></a>
 </p>
-
+</br>
 <p align="center"><b>Infant Pose Detection with Raspberry Pi's Streaming System</b></p>
 
 ## Introduction
