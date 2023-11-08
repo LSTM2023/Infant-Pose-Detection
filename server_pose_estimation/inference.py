@@ -10,10 +10,8 @@ from utils.notification import send_notification
 model = YOLO('./fine_tuning/runs/pose/train_m_16_640/weights/best.pt') # Fine-Tuned Model
 
 # Open the input video file
-# video_path = "http://203.249.22.164:5001/video_feed" # Flask Streaming Server
 # video_path = "rtsp://210.99.70.120:1935/live/cctv001.stream" # RSTP Sample
-video_path = "rtsp://203.249.22.164:9001/unicast" # v4l2 RTSP Server
-# video_path = "./dataset/test/real_baby_1.mp4" # Test
+video_path = "./fine_tuning/dataset/test/real_baby_1.mp4" # Test
 
 cap = cv2.VideoCapture(video_path)
 # cap.set(cv2.CAP_PROP_BUFFERSIZE, 30)
