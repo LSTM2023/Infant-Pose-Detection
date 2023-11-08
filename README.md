@@ -58,7 +58,7 @@ ${Repo Root}
 python3 inference.py
 ```
 
-7. You can check how inference progresses! </br></br>
+7. You can check how inference progresses!</br>
 <img src="README_src/image_1.png" alt="Alt text" width="300"/>
 
 ## Model Fine-Tuning
