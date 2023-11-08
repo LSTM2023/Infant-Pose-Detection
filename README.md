@@ -132,11 +132,11 @@ python3 train.py
 python3 valid.py
 ```
 
-* In our case, fine-tuning was performed by reconstructing the existing dataset as follows.</br></br>
+* In our case, fine-tuning was performed by reconstructing the existing dataset as follows.</br>
 <img src="README_src/image_2.png" alt="Alt text" width="1000"/>
 
-* The results of fine-tuning conducted with the reconstructed dataset are as follows.</br></br>
-<img src="README_src/image_3.png" alt="Alt text" width="1000"/></br>
+* The results of fine-tuning conducted with the reconstructed dataset are as follows.</br>
+<img src="README_src/image_3.png" alt="Alt text" width="1000"/>
 <img src="README_src/image_4.png" alt="Alt text" width="500"/>
 
 <!-- ## Directory Structure
