@@ -1,13 +1,10 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.DS_Store
 
 raspberry_pi/rpi_pose_estimation/
 raspberry_pi/rpi_streaming_server/
 
 server_pose_estimation/firebase_cloud_messaging/
-server_pose_estimation/fine_tuning/dataset/
-server_pose_estimation/fine_tuning/runs/
-*.pt
-
-.DS_Store
+server_pose_estimation/fine_tuning/
