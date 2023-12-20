@@ -9,6 +9,15 @@
 </br>
 <p align="center"><b>Infant Pose Detection with Raspberry Pi's Streaming System</b></p>
 
+## News
+- `2023/12/01`: 🏆 2023 공개SW 개발자대회 동상(큐브리드 대표상) 수상
+- `2023/11/16`: 🏆 경기대학교 SW상상기업 프로그램 경진대회 우수상 수상
+- `2023/11/02 - 2023/11/04`: 2023 SW인재 페스티벌 경기대학교 대표
+- `2023/08/16`: 🏆 경기대학교 SW상상기업 프로그램 경진대회 우수 사업계획서상 수상
+- `2023/06/14`: 🏆 경기대학교 2023 AI컴퓨터공학 산학협력 프로젝트 경진대회 대상 수상
+
+<br>
+
 ## Introduction
 * Predicts the baby's posture through Deep Learning - Pose Estimation technology and performs algorithm-based inappropriate posture detection based on the predicted posture.
 
@@ -186,8 +195,6 @@ We use [YOLOv8-pose model from ultralytics](https://docs.ultralytics.com/tasks/p
 * We used Debian 10, Buster version of Raspberry Pi 4B model, and used [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver) library to transmit video to the server and app.
 
 * It is configured to measure temperature and humidity using the DHT11 sensor along with the camera module.
-
-### How to set up Raspberry Pi
 
 ## License
 Infant-Pose-Detection is released under the [AGPL-3.0 License](https://github.com/LSTM2023/Infant-Pose-Detection/blob/main/LICENSE).
